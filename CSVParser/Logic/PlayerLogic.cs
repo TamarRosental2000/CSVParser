@@ -5,6 +5,7 @@ using Newtonsoft.Json;
 using System.Globalization;
 using System.Net.Http;
 using Microsoft.AspNetCore.Mvc;
+using CSVParser.Cache.Logic;
 
 namespace CSVParser.Logic
 {
@@ -29,6 +30,7 @@ namespace CSVParser.Logic
                 var playerModel = await GetPlayerInfoFromApi(player.id);
                 players.Add(playerModel);
             }
+
             CreateCSVFile(players);
             
             return players;
@@ -41,7 +43,9 @@ namespace CSVParser.Logic
                 response.EnsureSuccessStatusCode();
 
                 var json = await response.Content.ReadAsStringAsync();
-                return JsonConvert.DeserializeObject<PlayerModel>(json);
+                var playerModel = JsonConvert.DeserializeObject<PlayerModel>(json);
+                CacheLogic.SaveToCache(playerModel);
+                return playerModel;
             }
             catch (Exception)
             {

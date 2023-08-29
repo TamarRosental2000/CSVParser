@@ -4,10 +4,10 @@ using System.Threading;
 
 namespace CSVParser.Cache.Logic
 {
-    public class CacheLogic
+    public static class CacheLogic
     {
         private static readonly object fileLock = new object();
-        static void SaveToCache(PlayerModel playerData)
+        public static void SaveToCache(PlayerModel playerData)
         {
             string cachePath = GetCacheFilePath(playerData.Id);
             string json = JsonConvert.SerializeObject(playerData);
@@ -18,7 +18,7 @@ namespace CSVParser.Cache.Logic
             }
         }
 
-        static PlayerModel LoadFromCache(int playerId)
+        public static PlayerModel LoadFromCache(int playerId)
         {
             string cachePath = GetCacheFilePath(playerId);
 
@@ -33,7 +33,7 @@ namespace CSVParser.Cache.Logic
             return null;
         }
 
-        static string GetCacheFilePath(int playerId)
+        public static string GetCacheFilePath(int playerId)
         {
             // Generate cache file path based on player ID
             string cacheFolder = "cache"; // Replace with your desired cache folder
