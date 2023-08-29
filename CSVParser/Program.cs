@@ -9,6 +9,8 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddSingleton<ReadCSVFile>();
+builder.Services.AddSingleton<HttpClient>();
+builder.Services.AddSingleton<PlayerLogic>();
 
 var app = builder.Build();
 

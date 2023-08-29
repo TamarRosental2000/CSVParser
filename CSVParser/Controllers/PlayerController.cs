@@ -1,5 +1,6 @@
 using CsvHelper;
 using CSVParser.Logic;
+using CSVParser.Model;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Globalization;
@@ -11,28 +12,19 @@ using System.Threading.Tasks;
 [Route("[controller]")]
 public class PlayerController : ControllerBase
 {
-    private readonly IHttpClientFactory _httpClientFactory;
-    private readonly ReadCSVFile _readCSVFile;
-
-    public PlayerController(IHttpClientFactory httpClientFactory, ReadCSVFile readCSVFile)
+    private readonly PlayerLogic _playerLogic;
+    public PlayerController(PlayerLogic playerLogic)
     {
-        _httpClientFactory = httpClientFactory;
-        _readCSVFile= readCSVFile;
+
+        _playerLogic = playerLogic;
+
     }
 
-    [HttpGet]
-    public async Task<IActionResult> Get()
+    [HttpGet("player")]
+    public async Task<List<PlayerModel>> GetPlayerData()
     {
-        // Read the players.csv file 
-        _readCSVFile
-        // Process the file line by line using CsvHelper
+       
 
-        // Make API requests to Balldontlie's API for additional information
-        // Create a List<PlayerInfoModel> containing enriched player information
-
-        // Create a CSV file from the enriched data using CsvHelper
-        // Return the CSV file as a FileStreamResult
-
-        return File(memoryStream, "text/csv", "enriched_players.csv");
+        return await _playerLogic.GetPlayerData();
     }
 }
