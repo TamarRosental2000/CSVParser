@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using CSVParser.Model;
+using Newtonsoft.Json;
 using System.Threading;
 
 namespace CSVParser.Cache.Logic
@@ -41,19 +42,4 @@ namespace CSVParser.Cache.Logic
         }
     }
 
-    class PlayerModel
-    {
-        public int Id { get; set; }
-        public string Name { get; set; }
-    }
-    In this code, the FileLock object is used as a synchronization primitive to ensure that only one thread can access the critical section (read or write) at a time. The lock statement is used to acquire the lock before performing file read or write operations and release it afterward.
-
-Please keep in mind that while this approach provides basic thread safety, it's important to consider potential performance implications, especially in scenarios with high concurrency. For more advanced synchronization and thread safety, you might explore other mechanisms such as SemaphoreSlim, Mutex, or higher-level constructs provided by concurrent programming libraries.
-
-
-
-
-
-
-    }
 }
