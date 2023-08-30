@@ -23,14 +23,15 @@ namespace CSVParser.Logic
         }
         public async Task<List<PlayerModel>> GetPlayerData()
         {
-            List<PlayerModel> players = await UpdatePlayerData();
-
-            CreateCSVFile(players);
-
-            return players;
+            var response = await UpdatePlayerData();
+            if (response.Item1)
+            {
+                CreateCSVFile(response.Item2);
+            }
+            return response.Item2;
         }
 
-        public async Task<List<PlayerModel>> UpdatePlayerData()
+        public async Task<(bool,List<PlayerModel>)> UpdatePlayerData()
         {
             var csvPlayers = _readCSVFile.ReadRecords<PlayerCSVModel>(CSV_FILE_PATH_INPUT);
             var players = new List<PlayerModel>();
@@ -44,10 +45,10 @@ namespace CSVParser.Logic
                     CacheLogic.SaveToCache(playerModel);
                     isUpdated= true;
                 }
-                players.Add(playerModel);
+                players.Add( playerModel);
             }
 
-            return players;
+            return (isUpdated,players);
         }
 
         private async Task<PlayerModel> GetPlayerInfoFromApi(int playerId)

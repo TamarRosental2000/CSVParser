@@ -1,4 +1,7 @@
 ﻿
+using System;
+using System.Text.Json;
+
 namespace CSVParser.Model
 {
     public class PlayerModel
@@ -11,5 +14,16 @@ namespace CSVParser.Model
         public int HeightInches { get; set; }
         public int WeightPounds { get; set; }
         public TeamModel Team { get; set; }
+        public override bool Equals(object obj)
+        {
+            return this.EqualsPlayerModel(obj as PlayerModel);
+        }
+        public bool EqualsPlayerModel(PlayerModel other)
+        {
+            if (other == null)
+                return false;
+
+            return JsonSerializer.Serialize(this) == JsonSerializer.Serialize(other);
+        }
     }
 }
