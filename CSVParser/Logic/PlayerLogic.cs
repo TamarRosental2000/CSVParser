@@ -23,18 +23,33 @@ namespace CSVParser.Logic
         }
         public async Task<List<PlayerModel>> GetPlayerData()
         {
+            List<PlayerModel> players = await UpdatePlayerData();
+
+            CreateCSVFile(players);
+
+            return players;
+        }
+
+        public async Task<List<PlayerModel>> UpdatePlayerData()
+        {
             var csvPlayers = _readCSVFile.ReadRecords<PlayerCSVModel>(CSV_FILE_PATH_INPUT);
             var players = new List<PlayerModel>();
+            var isUpdated = false;
             foreach (var player in csvPlayers)
             {
                 var playerModel = await GetPlayerInfoFromApi(player.id);
+                var cachePlayerModel = CacheLogic.LoadFromCache(player.id);
+                if (cachePlayerModel != null && !cachePlayerModel.Equals(playerModel))
+                {
+                    CacheLogic.SaveToCache(playerModel);
+                    isUpdated= true;
+                }
                 players.Add(playerModel);
             }
 
-            CreateCSVFile(players);
-            
             return players;
         }
+
         private async Task<PlayerModel> GetPlayerInfoFromApi(int playerId)
         {
             try
@@ -44,7 +59,6 @@ namespace CSVParser.Logic
 
                 var json = await response.Content.ReadAsStringAsync();
                 var playerModel = JsonConvert.DeserializeObject<PlayerModel>(json);
-                CacheLogic.SaveToCache(playerModel);
                 return playerModel;
             }
             catch (Exception)
@@ -69,6 +83,11 @@ namespace CSVParser.Logic
             downloadPath = Path.Combine(downloadPath, "Downloads\\playersFullData.csv");
 
             return downloadPath;
+        }
+
+        public Task<PlayerModel> GetPlayer(int id)
+        {
+            return GetPlayerInfoFromApi(id);
         }
     }
 

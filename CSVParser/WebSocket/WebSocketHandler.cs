@@ -1,57 +1,38 @@
-﻿using CSVParser.Logic;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.DependencyInjection;
-using System;
+﻿using CSVParser.Model;
+using Newtonsoft.Json;
 using System.Net.WebSockets;
+using System.Numerics;
 using System.Text;
-using System.Threading.Tasks;
-using System.Collections.Generic;
-
-class WebSocketHandler
+namespace CSVParser.WebSocketHandler
 {
-    private readonly List<WebSocket> _sockets = new List<WebSocket>();
-
-    public async Task AddSocket(WebSocket socket)
+    public class WebSocketHandler
     {
-        _sockets.Add(socket);
-        await HandleWebSocket(socket);
-    }
-
-    private async Task HandleWebSocket(WebSocket socket)
-    {
-        byte[] buffer = new byte[1024];
-        while (socket.State == WebSocketState.Open)
+        private readonly List<WebSocket> _sockets = new List<WebSocket>();
+    
+        public async Task AddSocket(WebSocket socket)
         {
-            var result = await socket.ReceiveAsync(new ArraySegment<byte>(buffer), System.Threading.CancellationToken.None);
-
-            if (result.MessageType == WebSocketMessageType.Text)
+            _sockets.Add(socket);
+        }
+    
+        public async Task RemoveSocket(WebSocket socket)
+        {
+            _sockets.Remove(socket);
+        }
+    
+        public async Task SendPlayerListToClients(IEnumerable<PlayerModel> playerList)
+        {
+            var serializedPlayerList = JsonConvert.SerializeObject(playerList);
+            var buffer = new ArraySegment<byte>(Encoding.UTF8.GetBytes(serializedPlayerList));
+    
+            foreach (var socket in _sockets)
             {
-                string receivedMessage = Encoding.UTF8.GetString(buffer, 0, result.Count);
-                Console.WriteLine($"Received message: {receivedMessage}");
-
-                // Handle the received WebSocket message here
-            }
-            else if (result.MessageType == WebSocketMessageType.Close)
-            {
-                _sockets.Remove(socket);
-                break;
+                if (socket.State == WebSocketState.Open)
+                {
+                    await socket.SendAsync(buffer, WebSocketMessageType.Text, true, CancellationToken.None);
+                }
             }
         }
+
     }
 
-    public async Task SendToAll(string message)
-    {
-        byte[] buffer = Encoding.UTF8.GetBytes(message);
-        foreach (var socket in _sockets)
-        {
-            await socket.SendAsync(new ArraySegment<byte>(buffer), WebSocketMessageType.Text, true, System.Threading.CancellationToken.None);
-        }
-    }
-
-    public async Task RemoveSocket(WebSocket socket)
-    {
-        _sockets.Remove(socket);
-        await socket.CloseAsync(WebSocketCloseStatus.NormalClosure, "Connection closed", CancellationToken.None);
-    }
 }

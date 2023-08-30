@@ -36,7 +36,7 @@ namespace CSVParser.Cache.Logic
         public static string GetCacheFilePath(int playerId)
         {
             // Generate cache file path based on player ID
-            string cacheFolder = "cache"; // Replace with your desired cache folder
+            string cacheFolder = "cache\\Data"; // Replace with your desired cache folder
             string cacheFileName = $"player_{playerId}.json";
             return Path.Combine(cacheFolder, cacheFileName);
         }

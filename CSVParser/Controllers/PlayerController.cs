@@ -20,11 +20,18 @@ public class PlayerController : ControllerBase
 
     }
 
-    [HttpGet("player")]
+    [HttpGet("listPlayer")]
     public async Task<List<PlayerModel>> GetPlayerData()
     {
        
 
         return await _playerLogic.GetPlayerData();
+    }
+    [Route("{playerId}")]
+    [HttpGet]
+    public async Task<PlayerModel> GetPlayer([FromRoute] int playerId)
+    {
+        
+        return await _playerLogic.GetPlayer(playerId);
     }
 }
