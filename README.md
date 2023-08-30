@@ -29,3 +29,8 @@ dotnet add package Newtonsoft.Json --version 13.0.3
 dotnet add package Swashbuckle.AspNetCore --version 6.5.0
 ## System.IO (Version 4.3.0)
 dotnet add package System.IO --version 4.3.0
+
+## Getting Started
+
+1. Clone the repository:
+   git clone https://github.com/TamarRosental2000/CSVParser
