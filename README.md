@@ -13,7 +13,7 @@ There are 3 types of caches:
 - Persistent in-process Cache is when you back up your cache outside of process memory. It might be in a file, or in a database. This is more difficult, but if your process is restarted, the cache is not lost. Best used when getting the cached item is expensive, and your process tends to restart a lot.
 - Distributed Cache is when you want to have a shared cache for several machines. Usually, it will be several servers. With a distributed cache, it is stored in an external service. This means if one server saves a cache item, other servers can use it as well. Services like Redis are great for this.
 
-In order to improve the performance of this project use a cache. The type cache is Persistent in-process because I want the file to be most responsible 
+In order to improve the performance of this project use a cache. The type cache is Persistent in-process because I want the file to be most responsible I also using Lock-free multithreading with atomic operations
 ## Getting Started
 
 To install those packages using the .NET CLI, you can use the dotnet add package command followed by the package name and version. Open your terminal or command prompt and navigate to your project's root directory. Then, use the following commands to install each package:
